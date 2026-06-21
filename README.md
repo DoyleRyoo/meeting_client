@@ -4,7 +4,10 @@
 
 - React
 - vite
-- Tailwindcss
+- Tailwindcss@3
+- Axios
+- Zustand
+- React Router Dom
 - Docker
 - Oauth
 - Flutter (가능할 시)
@@ -15,17 +18,61 @@
 
 ```text
 frontend/
-├─ public/                 # 정적 파일 저장소
+├─ public/
 │
-├─ src/                    # 애플리케이션 소스 코드
-│  ├─ assets/              # 이미지, 아이콘 등 정적 리소스
-│  │
-│  ├─ App.tsx              # 최상위 애플리케이션 컴포넌트
-│  ├─ App.css              # App 컴포넌트 스타일
-│  ├─ main.tsx             # 애플리케이션 진입점
-│  └─ index.css            # 전역 스타일 정의
+├─ src/
 │
-├─ eslint.config.js        # ESLint 설정 파일
-├─ tsconfig.json           # TypeScript 설정 파일
+├─ eslint.config.ts
+├─ tsconfig.json
 └─ .env
+
+src/
+├─ api/                 # API 호출
+│  ├─ authApi.ts
+│  ├─ projectApi.ts
+│  ├─ participantApi.ts
+│  ├─ aiApi.ts
+│  └─ axios.ts
+│
+├─ components/          # 재사용 컴포넌트
+│  ├─ layout/
+│  │  ├─ AppLayout.tsx
+│  │  ├─ Sidebar.tsx
+│  │  └─ UserProfile.tsx
+│  │
+│  ├─ common/
+│  │  ├─ Button.tsx
+│  │  ├─ Modal.tsx
+│  │  ├─ Loading.tsx
+│  │  └─ EmptyState.tsx
+│  │
+│  └─ meeting/
+│     ├─ MeetingSummary.tsx
+│     ├─ ActionItemList.tsx
+│     └─ RecordingControl.tsx
+│
+├─ pages/
+│  ├─ LoginPage.tsx
+│  ├─ ProjectPage.tsx
+│  ├─ ProjectDetailPage.tsx
+│  ├─ MeetingCreatePage.tsx
+│  └─ MeetingDetailPage.tsx
+│
+├─ routes/
+│  └─ Router.tsx
+│
+├─ store/               # Context API
+│  ├─ AuthContext.tsx
+│  └─ ProjectContext.tsx
+│
+├─ hooks/
+│  ├─ useAuth.ts
+│  └─ useRecording.ts
+│
+├─ utils/
+│  ├─ constants.ts
+│  └─ formatters.ts
+│
+├─ App.tsx
+└─ main.tsx
 ```
