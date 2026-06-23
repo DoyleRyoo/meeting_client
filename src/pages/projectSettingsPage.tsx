@@ -21,22 +21,22 @@ export function ProjectSettingsPage() {
 
   return (
     <ProjectForm
-      title="프로젝트 설정 변경"
+      headerTitle="프로젝트 설정 변경"
       initial={{
-        name: selectedProject.name,
+        title: selectedProject.title,
         participants: selectedProject.participants,
         notionUrl: selectedProject.notionUrl,
       }}
       submitLabel="완료"
       cancelLabel="취소"
       onCancel={() => navigate(`/projects/${pid}`)}
-      onSubmit={({ name, participants, notionUrl }) => {
+      onSubmit={({ title, participants, notionUrl }) => {
         setProjects((previousProjects) =>
           previousProjects.map((project) =>
             project.id === pid
               ? {
                   ...project,
-                  name: name || project.name,
+                  title: title || project.title,
                   participants,
                   notionUrl,
                 }

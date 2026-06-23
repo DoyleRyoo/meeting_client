@@ -131,7 +131,7 @@ export function RootPageLayout() {
                 />
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-semibold">
-                    {project.name}
+                    {project.title}
                   </p>
                   {project.meetings.length > 0 && (
                     <p className="truncate text-xs text-muted-foreground">

@@ -5,7 +5,7 @@ import { useAuthStore } from "../../stores/authStore";
 
 export interface Participant { id: string; name: string; initials: string; color: string }
 export interface Meeting { id: string; title: string; date: string; nth: string }
-export interface Project { id: string; name: string; meetings: Meeting[]; participants: Participant[]; notionUrl: string }
+export interface Project { id: string; title: string; meetings: Meeting[]; participants: Participant[]; notionUrl: string }
 export interface Task { id: number; text: string; assignee: Participant; priority: "높음" | "중간" | "낮음"; done: boolean }
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -21,7 +21,7 @@ export const PARTICIPANTS: Participant[] = [
 export const INITIAL_PROJECTS: Project[] = [
   {
     id: "a",
-    name: "A project",
+    title: "A project",
     notionUrl: "https://notion.so/a-project",
     participants: [PARTICIPANTS[0], PARTICIPANTS[1]],
     meetings: [
@@ -33,7 +33,7 @@ export const INITIAL_PROJECTS: Project[] = [
   },
   {
     id: "b",
-    name: "B project",
+    title: "B project",
     notionUrl: "",
     participants: [PARTICIPANTS[2], PARTICIPANTS[3]],
     meetings: [
@@ -138,7 +138,23 @@ function getUserProjects(ownerKey: string): Project[] {
 
   try {
     const parsedProjects: unknown = JSON.parse(storedProjects);
-    return Array.isArray(parsedProjects) ? (parsedProjects as Project[]) : [];
+    return Array.isArray(parsedProjects)
+      ? parsedProjects.map((project) => {
+          const { name: legacyName, ...projectData } = project as Project & {
+            name?: unknown;
+          };
+
+          return {
+            ...projectData,
+            title:
+              typeof projectData.title === "string"
+                ? projectData.title
+                : typeof legacyName === "string"
+                  ? legacyName
+                  : "",
+          };
+        })
+      : [];
   } catch {
     return createInitialProjects();
   }

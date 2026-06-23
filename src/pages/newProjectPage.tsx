@@ -12,19 +12,19 @@ export function NewProjectPage() {
 
   return (
     <ProjectForm
-      title="새로운 프로젝트"
+      headerTitle="새로운 프로젝트"
       initial={{
-        name: "",
+        title: "New Project",
         participants: [PARTICIPANTS[0], PARTICIPANTS[1]],
         notionUrl: "",
       }}
       submitLabel="회의 시작하기"
       cancelLabel="취소"
       onCancel={() => navigate("/")}
-      onSubmit={({ name, participants, notionUrl }) => {
+      onSubmit={({ title, participants, notionUrl }) => {
         const newProject: Project = {
           id: `p-${Date.now()}`,
-          name: name || "새 프로젝트",
+          title: title || "새 프로젝트",
           participants,
           notionUrl,
           meetings: [],

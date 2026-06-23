@@ -18,7 +18,7 @@ interface ProjectFormProps {
   onCancel: () => void;
   submitLabel: string;
   cancelLabel: string;
-  head: string;
+  headerTitle: string;
 }
 
 export function ProjectForm({
@@ -27,7 +27,7 @@ export function ProjectForm({
   onCancel,
   submitLabel,
   cancelLabel,
-  head,
+  headerTitle,
 }: ProjectFormProps) {
   const [title, setTitle] = useState(initial.title);
   const [participants, setParticipants] = useState<Participant[]>(
@@ -46,7 +46,7 @@ export function ProjectForm({
   return (
     <div className="flex flex-1 flex-col">
       <div className="relative flex items-center justify-center border-b border-border px-10 py-5">
-        <h1 className="text-[18px] font-semibold">{title}</h1>
+        <h1 className="text-[18px] font-semibold">{headerTitle}</h1>
         <div className="absolute right-10 flex gap-2">
           <button
             onClick={onCancel}
@@ -70,7 +70,7 @@ export function ProjectForm({
               프로젝트 이름
             </label>
             <input
-              value={head}
+              value={title}
               onChange={(event) => setTitle(event.target.value)}
               placeholder="프로젝트 이름을 입력하세요"
               className="h-10 flex-1 rounded-lg border border-border bg-white px-3 text-sm outline-none transition-colors focus:border-primary"

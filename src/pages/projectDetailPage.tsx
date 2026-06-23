@@ -22,7 +22,7 @@ export function ProjectDetailPage() {
   return (
     <div className="flex min-h-0 flex-1 flex-col">
       <div className="relative flex items-center justify-center border-b border-border px-10 py-6">
-        <h1 className="text-[22px] font-semibold">{selectedProject.name}</h1>
+        <h1 className="text-[22px] font-semibold">{selectedProject.title}</h1>
         <div className="absolute right-10">
           <button
             onClick={() => navigate(`/projects/${pid}/update`)}
