@@ -15,7 +15,7 @@ export function AvatarChip({ participant, onRemove }: AvatarChipProps) {
       >
         {participant.initials[0]}
       </div>
-      <span className="font-medium text-foreground/80">{participant.name}</span>
+      <span className="font-medium text-foreground/80">{participant.title}</span>
       {onRemove && (
         <button
           onClick={onRemove}

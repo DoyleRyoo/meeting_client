@@ -176,7 +176,7 @@ export function SummaryPage() {
                     {task.assignee.initials[0]}
                   </div>
                   <span className="text-xs text-muted-foreground">
-                    {task.assignee.name}
+                    {task.assignee.title}
                   </span>
                 </div>
                 <div className="flex items-center gap-1">

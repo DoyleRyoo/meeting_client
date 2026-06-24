@@ -1,18 +1,19 @@
 import { useState } from "react";
 import { Paperclip, UserPlus } from "lucide-react";
-import { AvatarChip } from "./avatarChip";
+import { ParticipantManageModal } from "./participantManageModal";
 import {
-  PARTICIPANTS,
   type Participant,
 } from "../context/context";
 
 interface ProjectFormData {
   title: string;
+  description: string;
   participants: Participant[];
   notionUrl: string;
 }
 
 interface ProjectFormProps {
+  projectId?: string;
   initial: ProjectFormData;
   onSubmit: (data: ProjectFormData) => void;
   onCancel: () => void;
@@ -22,6 +23,7 @@ interface ProjectFormProps {
 }
 
 export function ProjectForm({
+  projectId,
   initial,
   onSubmit,
   onCancel,
@@ -30,18 +32,12 @@ export function ProjectForm({
   headerTitle,
 }: ProjectFormProps) {
   const [title, setTitle] = useState(initial.title);
+  const [description, setDescription] = useState(initial.description);
   const [participants, setParticipants] = useState<Participant[]>(
     initial.participants,
   );
   const [notionUrl, setNotionUrl] = useState(initial.notionUrl);
-  const [showParticipantAdd, setShowParticipantAdd] = useState(false);
-
-  const availableParticipants = PARTICIPANTS.filter(
-    (participant) =>
-      !participants.find(
-        (selectedParticipant) => selectedParticipant.id === participant.id,
-      ),
-  );
+  const [isParticipantManageOpen, setIsParticipantManageOpen] = useState(false);
 
   return (
     <div className="flex flex-1 flex-col">
@@ -55,7 +51,7 @@ export function ProjectForm({
             {cancelLabel}
           </button>
           <button
-            onClick={() => onSubmit({ title, participants, notionUrl })}
+            onClick={() => onSubmit({ title, description, participants, notionUrl })}
             className="rounded-full bg-foreground px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-foreground/80"
           >
             {submitLabel}
@@ -78,55 +74,31 @@ export function ProjectForm({
           </div>
 
           <div className="flex items-start gap-6">
-            <label className="mt-1 w-24 shrink-0 text-right text-sm font-semibold text-foreground/60">
-              참여자
+            <label className="mt-2 w-24 shrink-0 text-right text-sm font-semibold text-foreground/60">
+              프로젝트 설명
             </label>
-            <div className="flex flex-1 flex-wrap items-center gap-2">
-              {participants.map((participant) => (
-                <AvatarChip
-                  key={participant.id}
-                  participant={participant}
-                  onRemove={() =>
-                    setParticipants(
-                      participants.filter(
-                        (selectedParticipant) =>
-                          selectedParticipant.id !== participant.id,
-                      ),
-                    )
-                  }
-                />
-              ))}
-              <div className="relative">
-                <button
-                  onClick={() => setShowParticipantAdd(!showParticipantAdd)}
-                  className="flex items-center gap-1 rounded-full border border-dashed border-border px-2.5 py-1 text-xs text-muted-foreground transition-colors hover:border-foreground/40"
-                >
-                  <UserPlus size={12} />
-                  추가
-                </button>
-                {showParticipantAdd && availableParticipants.length > 0 && (
-                  <div className="absolute left-0 top-full z-10 mt-1 w-36 rounded-xl border border-border bg-white py-1 shadow-lg">
-                    {availableParticipants.map((participant) => (
-                      <button
-                        key={participant.id}
-                        onClick={() => {
-                          setParticipants([...participants, participant]);
-                          setShowParticipantAdd(false);
-                        }}
-                        className="flex w-full items-center gap-2 px-3 py-2 text-sm transition-colors hover:bg-muted"
-                      >
-                        <div
-                          className="flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-semibold text-white"
-                          style={{ backgroundColor: participant.color }}
-                        >
-                          {participant.initials[0]}
-                        </div>
-                        {participant.name}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
+            <textarea
+              value={description}
+              onChange={(event) => setDescription(event.target.value)}
+              placeholder="프로젝트 설명을 입력하세요"
+              className="min-h-24 flex-1 resize-none rounded-lg border border-border bg-white px-3 py-2 text-sm outline-none transition-colors focus:border-primary"
+            />
+          </div>
+
+          <div className="flex items-start gap-6">
+            <label className="mt-1 w-24 shrink-0 text-right text-sm font-semibold text-foreground/60">
+              참가자
+            </label>
+            <div className="flex flex-1 items-center justify-between rounded-lg border border-border bg-white px-3 py-2">
+              <p className="text-sm text-muted-foreground">{participants.length}명</p>
+              <button
+                type="button"
+                onClick={() => setIsParticipantManageOpen(true)}
+                className="flex items-center gap-1 rounded-full border border-dashed border-border px-2.5 py-1 text-xs text-muted-foreground transition-colors hover:border-foreground/40"
+              >
+                <UserPlus size={12} />
+                관리
+              </button>
             </div>
           </div>
 
@@ -155,6 +127,16 @@ export function ProjectForm({
           </div>
         </div>
       </div>
+      <ParticipantManageModal
+        isOpen={isParticipantManageOpen}
+        projectId={projectId}
+        initialParticipants={participants}
+        onClose={() => setIsParticipantManageOpen(false)}
+        onComplete={(updatedParticipants) => {
+          setParticipants(updatedParticipants);
+          setIsParticipantManageOpen(false);
+        }}
+      />
     </div>
   );
 }
