@@ -118,6 +118,20 @@ export function SummaryPage() {
         (item) => item.actionItemId === id ? { ...item, ...patch } : item
     )
   );
+  const addActionItem = () => setActionItems((items) => [
+    ...items,
+    {
+      actionItemId: createId(),
+      meetingId,
+      assigneeName: "",
+      assigneeEmail: "",
+      task: "",
+      startDate: "",
+      dueDate: "",
+      priority: "MEDIUM",
+      status: "미착수",
+    },
+  ]);
 
   return <div className="flex min-h-0 flex-1 flex-col">
     <div className="relative flex items-center justify-center border-b border-border px-10 py-5">
@@ -276,9 +290,19 @@ export function SummaryPage() {
 
       {activeTab === "action" && (
         <section className="rounded-xl border border-border bg-white p-5">
-          <h2 className="text-base font-semibold">
-            할 일 요약
-          </h2>
+          <div className="flex items-center justify-between">
+            <h2 className="text-base font-semibold">
+              할 일 요약
+            </h2>
+            <button
+              type="button"
+              onClick={addActionItem}
+              className="flex items-center gap-1 text-sm text-primary"
+            >
+              <Plus size={14} />
+              추가
+            </button>
+          </div>
 
           <div className="mt-3 overflow-x-auto">
             <table className="w-full min-w-[760px] text-left text-sm">
@@ -339,9 +363,9 @@ export function SummaryPage() {
                       onChange={(event) => updateAction(item.actionItemId, { priority: event.target.value as ActionItem["priority"] })}
                       className="bg-transparent outline-none"
                     >
-                      <option>높음</option>
-                      <option>중간</option>
-                      <option>낮음</option>
+                      <option value="HIGH">높음</option>
+                      <option value="MEDIUM">중간</option>
+                      <option value="LOW">낮음</option>
                     </select>
                   </td>
                   <td>

@@ -61,43 +61,36 @@ export function ProjectDetailPage() {
       <div className="flex-1 overflow-y-auto px-10 py-6">
         <div className="max-w-xl space-y-6">
           <section className="rounded-xl border border-border bg-white p-5">
-            <div className="flex items-center justify-between gap-4">
-              <h2 className="text-base font-semibold">프로젝트 정보</h2>
-              <div className="relative">
-                <button
-                  type="button"
-                  onClick={() => setIsStatusSelectorOpen((isOpen) => !isOpen)}
-                  className={`rounded-full px-2.5 py-1 text-xs font-medium ${projectStatusColor[projectDetail.status].badgeClassName}`}
-                >
-                  {projectStatusLabel[projectDetail.status]}
-                </button>
-                {isStatusSelectorOpen && (
-                  <div className="absolute right-0 top-full z-10 mt-2 w-28 rounded-lg border border-border bg-white p-1 shadow-lg">
-                    {([projectStatus.active, projectStatus.completed, projectStatus.archived] as const).map((status) => (
-                      <button
-                        key={status}
-                        type="button"
-                        onClick={() => handleProjectStatusChange(status)}
-                        className={`w-full rounded-md px-3 py-2 text-left text-xs transition-colors hover:bg-muted ${status === projectDetail.status ? "bg-muted font-semibold" : ""}`}
-                      >
-                        {projectStatusLabel[status]}
-                      </button>
-                    ))}
+            <div className="flex items-start justify-between gap-4">
+              <div className="min-w-0">
+                <div className="flex flex-wrap items-center gap-2">
+                  <h2 className="text-base font-semibold">프로젝트 정보</h2>
+                  <div className="relative">
+                    <button
+                      type="button"
+                      onClick={() => setIsStatusSelectorOpen((isOpen) => !isOpen)}
+                      className={`rounded-full px-2.5 py-1 text-xs font-medium ${projectStatusColor[projectDetail.status].badgeClassName}`}
+                    >
+                      {projectStatusLabel[projectDetail.status]}
+                    </button>
+                    {isStatusSelectorOpen && (
+                      <div className="absolute right-0 top-full z-10 mt-2 w-28 rounded-lg border border-border bg-white p-1 shadow-lg">
+                        {([projectStatus.active, projectStatus.completed, projectStatus.archived] as const).map((status) => (
+                          <button
+                            key={status}
+                            type="button"
+                            onClick={() => handleProjectStatusChange(status)}
+                            className={`w-full rounded-md px-3 py-2 text-left text-xs transition-colors hover:bg-muted ${status === projectDetail.status ? "bg-muted font-semibold" : ""}`}
+                          >
+                            {projectStatusLabel[status]}
+                          </button>
+                        ))}
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-            </div>
-            <p className="mt-3 text-sm text-muted-foreground">
-              {projectDetail.description || "프로젝트 설명이 없습니다."}
-            </p>
-          </section>
-
-          <section className="rounded-xl border border-border bg-white p-5">
-            <div className="flex items-center justify-between gap-4">
-              <div>
-                <h2 className="text-base font-semibold">참가자 관리</h2>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  {projectDetail.participants.length}명
+                </div>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  참가자 {projectDetail.participants.length}명
                 </p>
               </div>
               <button
@@ -108,6 +101,9 @@ export function ProjectDetailPage() {
                 관리
               </button>
             </div>
+            <p className="mt-4 text-sm text-muted-foreground">
+              {projectDetail.description || "프로젝트 설명이 없습니다."}
+            </p>
           </section>
 
           <div className="space-y-2">
