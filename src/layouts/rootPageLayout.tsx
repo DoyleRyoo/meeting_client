@@ -1,32 +1,9 @@
 import { useState } from "react";
 import { ChevronDown, Folder, Plus } from "lucide-react";
 import { Outlet, useLocation, useNavigate } from "react-router";
-import { useApp } from "../components/context/context";
+import { projectStatusColor, type ProjectStatus, useApp } from "../components/context/context";
 import { useAuthStore } from "../stores/authStore";
 import { ProfileEditModal } from "../components/auth/profileEditModal";
-
-export type ProjectStatus = "ACTIVE" | "COMPLETED" | "ARCHIVED";
-
-const projectStatusColor: Record<
-  ProjectStatus,
-  {
-    active: string;
-    inactive: string;
-  }
-> = {
-  ACTIVE: {
-    active: "#22C55E",
-    inactive: "#86EFAC",
-  },
-  COMPLETED: {
-    active: "#3B82F6",
-    inactive: "#93C5FD",
-  },
-  ARCHIVED: {
-    active: "#6B7280",
-    inactive: "#D1D5DB",
-  },
-};
 
 export function RootPageLayout() {
   const navigate = useNavigate();
@@ -48,6 +25,20 @@ export function RootPageLayout() {
   const handleProfileEditOpen = () => {
     setIsProfileMenuOpen(false);
     setIsProfileEditOpen(true);
+  };
+
+  const getProjectStatusColor = (
+    status: unknown,
+    isActive: boolean,
+  ) => {
+    const safeStatus: ProjectStatus =
+      status === "ACTIVE" ||
+      status === "COMPLETED" ||
+      status === "ARCHIVED"
+        ? status
+        : "ACTIVE";
+
+    return projectStatusColor[safeStatus][isActive ? "active" : "inactive"];
   };
 
   return (
@@ -150,9 +141,10 @@ export function RootPageLayout() {
                 <Folder
                   size={15}
                   className={active ? "text-amber-500" : "text-amber-400"}
-                  fill={projectStatusColor[project.projectStatus  as ProjectStatus][
-                    active ? "active" : "inactive"
-                  ]}
+                  fill={getProjectStatusColor(project.projectStatus, active)}
+                  // fill={projectStatusColor[project.projectStatus  as ProjectStatus][
+                  //   active ? "active" : "inactive"
+                  // ]}
                 />
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-semibold">

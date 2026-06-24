@@ -20,6 +20,27 @@ export const projectParticipantStatusLabel: Record<
   REMOVED: "퇴사",
 };
 
+
+export const projectStatus = {
+  active: "ACTIVE",
+  completed: "COMPLETED",
+  archived: "ARCHIVED",
+} as const;
+export type ProjectStatus =
+  (typeof projectStatus)[keyof typeof projectStatus];
+export const projectStatusLabel: Record<ProjectStatus, string> = {
+  ACTIVE: "진행중",
+  COMPLETED: "완료",
+  ARCHIVED: "보관됨",
+};
+export const projectStatusColor: Record<
+  ProjectStatus,
+  { active: string; inactive: string; badgeClassName: string }
+> = {
+  ACTIVE: { active: "#22C55E", inactive: "#86EFAC", badgeClassName: "bg-green-100 text-green-700" },
+  COMPLETED: { active: "#3B82F6", inactive: "#93C5FD", badgeClassName: "bg-blue-100 text-blue-700" },
+  ARCHIVED: { active: "#6B7280", inactive: "#D1D5DB", badgeClassName: "bg-gray-100 text-gray-700" },
+};
 export interface Participant {
   id: string;
   title: string;
@@ -83,7 +104,7 @@ export interface ProjectDetailResponse {
   companyId: string;
   title: string;
   description: string;
-  status: string;
+  status: ProjectStatus;
   createdAt: string;
   updatedAt: string | null;
   participants: ProjectDetailParticipant[];
@@ -112,7 +133,7 @@ export interface Project {
   companyId?: string;
   title: string;
   projectDescription?: string;
-  projectStatus?: string;
+  projectStatus?: ProjectStatus;
   projectCreatedAt?: string;
   projectUpdatedAt?: string;
   meetings: Meeting[];
@@ -121,6 +142,28 @@ export interface Project {
   notionUrl: string;
 }
 export interface Task { id: number; text: string; assignee: Participant; priority: "높음" | "중간" | "낮음"; done: boolean }
+
+
+export interface ShortSummary {
+  meetingId: string;
+  shortSummary: string;
+}
+export interface FullSummarySection {
+  contextTitle: string;
+  context: string[];
+}
+export interface ActionItem {
+  actionItemId?: string;
+  meetingId: string;
+  projectMemberId?: string;
+  assigneeName: string;
+  assigneeEmail: string;
+  task: string;
+  startDate: string;
+  dueDate: string;
+  priority: "HIGH" | "MEDIUM" | "LOW";
+  status: "미착수" | "진행중" | "완료";
+}
 
 // ─── Mock data ────────────────────────────────────────────────────────────────
 
@@ -277,6 +320,75 @@ export const INITIAL_PROJECTS: Project[] = [
 ];
 // ===== 삭제 끝: 프로젝트 참가자 상태 Mock 데이터 =====
 
+
+// 테스트 코드입니다 추후 삭제되어야합니다
+// ===== 삭제 시작: 회의 요약 Mock 데이터 =====
+let mockShortSummaries: ShortSummary[] = [
+  { meetingId: "m1", shortSummary: "AI 기반 회의록 자동화의 구현 범위와 담당 업무를 확정했습니다." },
+  { meetingId: "m5", shortSummary: "킥오프 회의에서 일정과 협업 방식을 합의했습니다." },
+];
+let mockFullSummaries: Record<string, FullSummarySection[]> = {
+  m1: [
+    { contextTitle: "회의 목적", context: ["AI 기반 회의록 자동화의 요구 사항을 정리했습니다.", "프론트엔드와 백엔드의 연동 범위를 확정했습니다."] },
+    { contextTitle: "핵심 결정 사항", context: ["프로젝트별 회의록을 우선 제공하기로 했습니다.", "참여자와 업무 항목은 프로젝트 설정에서 관리합니다."] },
+  ],
+  m5: [
+    { contextTitle: "킥오프 논의", context: ["프로젝트 일정과 담당 업무를 공유했습니다."] },
+  ],
+};
+let mockActionItems: Record<string, ActionItem[]> = {
+  m1: [
+    { actionItemId: "action-1", meetingId: "m1", projectMemberId: "pm-a-1", assigneeName: "유도윤", assigneeEmail: "doyoon@example.com", task: "프로젝트 목록 API 연동 준비", startDate: "2026-06-18", dueDate: "2026-06-21", priority: "HIGH", status: "진행중" },
+    { actionItemId: "action-2", meetingId: "m1", projectMemberId: "pm-a-2", assigneeName: "이한선", assigneeEmail: "hanseon@example.com", task: "회의 요약 응답 구조 정의", startDate: "2026-06-18", dueDate: "2026-06-24", priority: "MEDIUM", status: "미착수" },
+  ],
+  m5: [
+    { actionItemId: "action-3", meetingId: "m5", projectMemberId: "pm-b-1", assigneeName: "김인영", assigneeEmail: "inyoung@example.com", task: "킥오프 요구 사항 검토", startDate: "2026-06-10", dueDate: "2026-06-12", priority: "HIGH", status: "완료" },
+  ],
+};
+
+export function getShortSummaryMock(meetingId: string | number): ShortSummary {
+  // 실제 백엔드와 연결에 사용되는 코드입니다
+  // 백엔드 한 줄 요약 조회 API 연동 완료 후 주석을 해제하여 사용합니다.
+  // const response = await axios.post(`/meetings/short?mid=${meetingId}`);
+  // return response.data;
+  return { ...(mockShortSummaries.find((summary) => summary.meetingId === String(meetingId)) ?? { meetingId: String(meetingId), shortSummary: "" }) };
+}
+export function getFullSummaryMock(meetingId: string | number): FullSummarySection[] {
+  // 실제 백엔드와 연결에 사용되는 코드입니다
+  // 백엔드 전체 요약 조회 API 연동 완료 후 주석을 해제하여 사용합니다.
+  // const response = await axios.post(`/meetings/full?mid=${meetingId}`);
+  // return response.data;
+  return (mockFullSummaries[String(meetingId)] ?? []).map((section) => ({ ...section, context: [...section.context] }));
+}
+export function getActionItemsMock(meetingId: string | number): ActionItem[] {
+  // 실제 백엔드와 연결에 사용되는 코드입니다
+  // 백엔드 할 일 요약 조회 API 연동 완료 후 주석을 해제하여 사용합니다.
+  // const response = await axios.post(`/meetings/action?mid=${meetingId}`);
+  // return response.data;
+  return (mockActionItems[String(meetingId)] ?? []).map((item) => ({ ...item }));
+}
+export function updateMeetingSummariesMock(
+  meetingId: string | number,
+  shortSummary: string,
+  fullSummary: FullSummarySection[],
+  actionItems: ActionItem[],
+) {
+  // 실제 백엔드와 연결에 사용되는 코드입니다
+  // 백엔드 한 줄 요약 수정 API 연동 완료 후 주석을 해제하여 사용합니다.
+  // const shortResponse = await axios.patch(`/aiactions/update/short?mid=${meetingId}`, { shortSummary });
+  // 실제 백엔드와 연결에 사용되는 코드입니다
+  // 백엔드 전체 요약 수정 API 연동 완료 후 주석을 해제하여 사용합니다.
+  // const fullResponse = await axios.patch(`/aiactions/update/full?mid=${meetingId}`, { sections: fullSummary });
+  // 실제 백엔드와 연결에 사용되는 코드입니다
+  // 백엔드 할 일 요약 수정 API 연동 완료 후 주석을 해제하여 사용합니다.
+  // const actionResponse = await axios.patch(`/aiactions/update/action?mid=${meetingId}`, { actionItems });
+  const id = String(meetingId);
+  mockShortSummaries = [...mockShortSummaries.filter((summary) => summary.meetingId !== id), { meetingId: id, shortSummary }];
+  mockFullSummaries[id] = fullSummary.map((section) => ({ ...section, context: [...section.context] }));
+  mockActionItems[id] = actionItems.map((item) => ({ ...item, meetingId: id }));
+}
+// ===== 삭제 끝: 회의 요약 Mock 데이터 =====
+
 export const FULL_SUMMARY = {
   핵심: [
     "AI 기반 회의록 작성 시스템에 대한 세부 요구 사항을 확정함.",
@@ -406,7 +518,7 @@ export function getProjectDetail(
     companyId: project.companyId ?? "mock-company",
     title: project.title,
     description: project.projectDescription ?? "",
-    status: project.projectStatus ?? "ACTIVE",
+    status: project.projectStatus ?? projectStatus.active,
     createdAt: project.projectCreatedAt ?? "",
     updatedAt: project.projectUpdatedAt ?? null,
     participants: participants.map((participant) => {
@@ -442,6 +554,28 @@ export function getProjectDetail(
   };
 }
 // ===== 삭제 끝: 프로젝트 상세 조회 Mock 데이터 =====
+
+// 테스트 코드입니다 추후 삭제되어야합니다
+// ===== 삭제 시작: 프로젝트 상태 수정 Mock 코드 =====
+export function updateProjectStatus(
+  projectId: string | number,
+  nextStatus: ProjectStatus,
+  projects: Project[],
+): Project | undefined {
+  // 실제 백엔드와 연결에 사용되는 코드입니다
+  // 백엔드 프로젝트 상태 수정 API 연동 완료 후 주석을 해제하여 사용합니다.
+  // const response = await axios.patch(`/projects/status?pid=${projectId}`, {
+  //   status: nextStatus,
+  // });
+  // return response.data;
+  const selectedProjectId = String(projectId);
+  const project = projects.find(
+    (currentProject) => currentProject.id === selectedProjectId || currentProject.projectId === selectedProjectId,
+  );
+  if (!project) return undefined;
+  return { ...project, projectStatus: nextStatus, projectUpdatedAt: new Date().toISOString() };
+}
+// ===== 삭제 끝: 프로젝트 상태 수정 Mock 코드 =====
 
 // 테스트 코드입니다 추후 삭제되어야합니다
 // ===== 삭제 시작: 프로젝트 전체 수정 Mock 코드 =====

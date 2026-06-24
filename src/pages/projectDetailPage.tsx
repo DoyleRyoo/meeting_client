@@ -1,14 +1,38 @@
 import { ChevronRight, Folder } from "lucide-react";
+import { useState } from "react";
 import { useNavigate, useParams } from "react-router";
-import { getProjectDetail, useApp } from "../components/context/context";
+import {
+  getProjectDetail,
+  projectStatus,
+  projectStatusColor,
+  projectStatusLabel,
+  type ProjectStatus,
+  updateProjectStatus,
+  useApp,
+} from "../components/context/context";
 
 export function ProjectDetailPage() {
   const navigate = useNavigate();
   const { pid } = useParams<{ pid: string }>();
-  const { projects } = useApp();
+  const { projects, setProjects } = useApp();
+  const [isStatusSelectorOpen, setIsStatusSelectorOpen] = useState(false);
 
   const selectedProject = projects.find((project) => project.id === pid);
   const projectDetail = getProjectDetail(pid ?? "", projects);
+
+  const handleProjectStatusChange = (nextStatus: ProjectStatus) => {
+    if (!projectDetail || nextStatus === projectDetail.status) {
+      setIsStatusSelectorOpen(false);
+      return;
+    }
+    const updatedProject = updateProjectStatus(projectDetail.projectId, nextStatus, projects);
+    if (updatedProject) {
+      setProjects((currentProjects) => currentProjects.map((project) =>
+        project.id === updatedProject.id ? updatedProject : project,
+      ));
+    }
+    setIsStatusSelectorOpen(false);
+  };
 
   if (!selectedProject || !projectDetail) {
     return (
@@ -39,9 +63,29 @@ export function ProjectDetailPage() {
           <section className="rounded-xl border border-border bg-white p-5">
             <div className="flex items-center justify-between gap-4">
               <h2 className="text-base font-semibold">프로젝트 정보</h2>
-              <span className="rounded-full bg-muted px-2.5 py-1 text-xs font-medium text-muted-foreground">
-                {projectDetail.status}
-              </span>
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setIsStatusSelectorOpen((isOpen) => !isOpen)}
+                  className={`rounded-full px-2.5 py-1 text-xs font-medium ${projectStatusColor[projectDetail.status].badgeClassName}`}
+                >
+                  {projectStatusLabel[projectDetail.status]}
+                </button>
+                {isStatusSelectorOpen && (
+                  <div className="absolute right-0 top-full z-10 mt-2 w-28 rounded-lg border border-border bg-white p-1 shadow-lg">
+                    {([projectStatus.active, projectStatus.completed, projectStatus.archived] as const).map((status) => (
+                      <button
+                        key={status}
+                        type="button"
+                        onClick={() => handleProjectStatusChange(status)}
+                        className={`w-full rounded-md px-3 py-2 text-left text-xs transition-colors hover:bg-muted ${status === projectDetail.status ? "bg-muted font-semibold" : ""}`}
+                      >
+                        {projectStatusLabel[status]}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
             <p className="mt-3 text-sm text-muted-foreground">
               {projectDetail.description || "프로젝트 설명이 없습니다."}
