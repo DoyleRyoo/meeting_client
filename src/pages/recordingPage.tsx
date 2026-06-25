@@ -23,6 +23,7 @@ export function RecordingPage() {
   const { elapsed, setElapsed, timerRef } = useApp();
   const startSummary = useSummaryStore((state) => state.startSummary);
   const [status, setStatus] = useState<RecordingStatus>("ready");
+  const [waveformStream, setWaveformStream] = useState<MediaStream | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const mediaStreamRef = useRef<MediaStream | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
@@ -51,23 +52,26 @@ export function RecordingPage() {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       mediaStreamRef.current = stream;
+
       const mimeType = getSupportedAudioMimeType();
       const mediaRecorder = mimeType
         ? new MediaRecorder(stream, { mimeType })
         : new MediaRecorder(stream);
 
       audioChunksRef.current = [];
+
       mediaRecorder.ondataavailable = (event) => {
         if (event.data.size > 0) audioChunksRef.current.push(event.data);
       };
-      mediaRecorder.onerror = () => {
-        alert("녹음 중 오류가 발생했습니다.");
-        if (timerRef.current) clearInterval(timerRef.current);
-        stopMediaStream();
-        setStatus("ready");
-      };
-      mediaRecorder.start();
+
+      mediaRecorder.start(1000);
+
       mediaRecorderRef.current = mediaRecorder;
+      setWaveformStream(stream);
+
+      setElapsed(0);
+      setStatus("recording");
+      startTimer();
       mediaStreamRef.current = stream;
       setElapsed(0);
       setStatus("recording");
@@ -105,12 +109,12 @@ export function RecordingPage() {
     if (timerRef.current) clearInterval(timerRef.current);
 
     try {
-      const audioBlob = await stopRecording(mediaRecorder, audioChunksRef.current);
-      const fileName = createRecordingFileName(audioBlob.type);
+      // const audioBlob = await stopRecording(mediaRecorder, audioChunksRef.current);
+      // const fileName = createRecordingFileName(audioBlob.type);
 
       // 테스트 단계에서만 사용하는 코드입니다. 추후 삭제가 필요합니다.
       // MediaRecorder의 실제 인코딩 형식에 맞춰 브라우저 다운로드를 실행합니다.
-      downloadRecording(audioBlob, fileName);
+      // downloadRecording(audioBlob, fileName);  // 로컬 다운로드 부분
 
       // 실제 프로그램에서 사용하는 코드입니다.
       // 백엔드 녹음 파일 업로드 API 연동 완료 후 주석을 해제하여 사용합니다.
@@ -151,6 +155,7 @@ export function RecordingPage() {
   const stopMediaStream = () => {
     mediaStreamRef.current?.getTracks().forEach((track) => track.stop());
     mediaStreamRef.current = null;
+    setWaveformStream(null);
   };
 
   return (
@@ -181,7 +186,7 @@ export function RecordingPage() {
       </div>
 
       <div className="flex flex-1 flex-col items-center justify-center gap-10 pb-10">
-        <Waveform active={status === "recording"} />
+        <Waveform active={status === "recording"} stream={waveformStream} />
 
         <div className="flex items-center gap-8">
           <button

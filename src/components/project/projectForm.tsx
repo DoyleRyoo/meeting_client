@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Paperclip, UserPlus } from "lucide-react";
+import { UserPlus } from "lucide-react";
 import { ParticipantManageModal } from "./participantManageModal";
 import {
   type Participant,
@@ -85,8 +85,8 @@ export function ProjectForm({
             />
           </div>
 
-          <div className="flex items-start gap-6">
-            <label className="mt-1 w-24 shrink-0 text-right text-sm font-semibold text-foreground/60">
+          <div className="flex items-center gap-6">
+            <label className="w-24 shrink-0 text-right text-sm font-semibold text-foreground/60">
               참가자
             </label>
             <div className="flex flex-1 items-center justify-between rounded-lg border border-border bg-white px-3 py-2">
@@ -112,18 +112,6 @@ export function ProjectForm({
               placeholder="https://notion.so/..."
               className="h-10 flex-1 rounded-lg border border-border bg-white px-3 text-sm outline-none transition-colors focus:border-primary"
             />
-          </div>
-
-          <div className="flex items-start gap-6">
-            <label className="mt-1 w-24 shrink-0 text-right text-sm font-semibold text-foreground/60">
-              파일 첨부
-            </label>
-            <div className="flex-1">
-              <div className="flex cursor-pointer items-center gap-2 rounded-lg border border-dashed border-border bg-white px-4 py-2.5 text-sm text-muted-foreground transition-colors hover:border-foreground/30">
-                <Paperclip size={14} />
-                <span>+ 파일을 선택하거나 드래그</span>
-              </div>
-            </div>
           </div>
         </div>
       </div>
