@@ -8,6 +8,7 @@ import {
   ProjectDetailPage,
   ProjectSettingsPage,
   RecordingPage,
+  SignupNotionConnectPage,
   SummarizingPage,
   SummaryPage,
   UploadDonePage,
@@ -21,6 +22,7 @@ import {
 export const router = createBrowserRouter([
   { path: "/login", Component: LoginPage },
   { path: "/auth/callback", Component: AuthCallbackPage },
+  { path: "/signup/notion", Component: SignupNotionConnectPage },
 
   // 회원가입 테스트용 경로
   { path: "user-info", Component: UserInfoInputPage },

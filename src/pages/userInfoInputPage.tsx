@@ -4,6 +4,7 @@ import { signup } from "../apis/authApi";
 import {
   INITIAL_SIGNUP_FORM_VALUES,
   MOCK_OAUTH_USER,
+  useApp,
 } from "../components/context/context";
 import { useAuthStore } from "../stores/authStore";
 import type { SignupFormValues } from "../types/authTypes";
@@ -13,6 +14,11 @@ type TextFieldName = Exclude<keyof SignupFormValues, "userProfileImage">;
 export function UserInfoInputPage() {
   const navigate = useNavigate();
   const { setAccessToken, setOAuthUser } = useAuthStore();
+  const {
+    disconnectMockNotionWorkspace,
+    notionConnected,
+    notionWorkspaceName,
+  } = useApp();
   const oauthUser = useAuthStore((state) => state.oauthUser) ?? MOCK_OAUTH_USER;
   const [values, setValues] = useState<SignupFormValues>(INITIAL_SIGNUP_FORM_VALUES);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -70,7 +76,7 @@ export function UserInfoInputPage() {
         profileImage,
       });
       setAccessToken("mock-access-token");
-      navigate("/", { replace: true });
+      navigate("/signup/notion", { replace: true });
     } catch (error: unknown) {
       const message =
         error instanceof Error
@@ -122,6 +128,59 @@ function readFileAsDataUrl(file: File): Promise<string> {
             {isSubmitting ? "가입 처리 중..." : "가입 완료"}
           </button>
         </form>
+
+        <section className="mt-6 rounded-lg border border-border bg-white p-4">
+          <div className="flex items-start justify-between gap-4">
+            <div className="min-w-0">
+              <h2 className="text-base font-semibold text-foreground">
+                Notion Workspace
+              </h2>
+              {notionConnected ? (
+                <div className="mt-2">
+                  <p className="text-sm font-semibold text-green-700">
+                    Notion 연결됨
+                  </p>
+                  <p className="mt-1 truncate text-sm text-muted-foreground">
+                    {notionWorkspaceName || "Notion 워크스페이스"}
+                  </p>
+                </div>
+              ) : (
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Notion이 연결되어 있지 않습니다.
+                </p>
+              )}
+            </div>
+          </div>
+
+          <div className="mt-4 flex flex-wrap gap-2">
+            {notionConnected ? (
+              <>
+                <button
+                  type="button"
+                  onClick={disconnectMockNotionWorkspace}
+                  className="rounded-full border border-border px-4 py-2 text-sm font-semibold text-foreground/70 transition-colors hover:bg-muted"
+                >
+                  연결 해제
+                </button>
+                <button
+                  type="button"
+                  onClick={() => navigate("/signup/notion")}
+                  className="rounded-full bg-foreground px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-foreground/80"
+                >
+                  다시 연결
+                </button>
+              </>
+            ) : (
+              <button
+                type="button"
+                onClick={() => navigate("/signup/notion")}
+                className="rounded-full bg-foreground px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-foreground/80"
+              >
+                Notion 연결하기
+              </button>
+            )}
+          </div>
+        </section>
       </section>
     </main>
   );

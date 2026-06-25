@@ -20,6 +20,7 @@ export function RootPageLayout() {
   const handleLogout = () => {
     logout();
     setIsProfileMenuOpen(false);
+    navigate("/");
   };
 
   const handleProfileEditOpen = () => {

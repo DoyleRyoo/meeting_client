@@ -9,6 +9,7 @@ export { SummaryPage } from "./summaryPage";
 export { UploadDonePage } from "./uploadDonePage";
 export { UploadingPage } from "./uploadingPage";
 export { AuthCallbackPage } from "./authCallbackPage";
+export { SignupNotionConnectPage } from "./signupNotionConnectPage";
 
 // 테스트 용 export
 

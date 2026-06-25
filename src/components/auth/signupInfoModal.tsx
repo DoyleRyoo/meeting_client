@@ -49,7 +49,7 @@ export function SignupInfoModal() {
     try {
       await signup(values, accessToken);
       closeSignupModal();
-      navigate("/", { replace: true });
+      navigate("/signup/notion", { replace: true });
     } catch (error: unknown) {
       const message =
         error instanceof Error
