@@ -70,19 +70,40 @@ export function SignupInfoModal() {
         <p className="mt-2 text-sm text-muted-foreground">서비스 이용을 위해 필수 정보를 입력해 주세요.</p>
         <div className="mt-5 space-y-4">
           <label className="block text-sm font-medium text-foreground">회사
-            <input required value={values.companyId} onChange={handleChange("companyId")} className="mt-1.5 w-full rounded-lg border border-border px-3 py-2" />
+            <input
+              required value={values.companyId}
+              onChange={handleChange("companyId")}
+              className="mt-1.5 w-full rounded-lg border border-border px-3 py-2"
+            />
           </label>
           <label className="block text-sm font-medium text-foreground">유저 직급
-            <input required value={values.userPosition} onChange={handleChange("userPosition")} className="mt-1.5 w-full rounded-lg border border-border px-3 py-2" />
+            <input
+              required value={values.userPosition}
+              onChange={handleChange("userPosition")}
+              className="mt-1.5 w-full rounded-lg border border-border px-3 py-2"
+            />
           </label>
           <label className="block text-sm font-medium text-foreground">유저 부서
-            <input required value={values.userDepartment} onChange={handleChange("userDepartment")} className="mt-1.5 w-full rounded-lg border border-border px-3 py-2" />
+            <input
+              required value={values.userDepartment}
+              onChange={handleChange("userDepartment")}
+              className="mt-1.5 w-full rounded-lg border border-border px-3 py-2"
+            />
           </label>
           <label className="block text-sm font-medium text-foreground">유저 번호
-            <input required value={values.userEmployeeNumber} onChange={handleChange("userEmployeeNumber")} className="mt-1.5 w-full rounded-lg border border-border px-3 py-2" />
+            <input
+              required value={values.userEmployeeNumber}
+              onChange={handleChange("userEmployeeNumber")}
+              className="mt-1.5 w-full rounded-lg border border-border px-3 py-2"
+            />
           </label>
           <label className="block text-sm font-medium text-foreground">유저 프로필 사진 <span className="text-muted-foreground">(선택)</span>
-            <input type="file" accept="image/*" onChange={handleProfileImageChange} className="mt-1.5 block w-full text-sm" />
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleProfileImageChange}
+              className="mt-1.5 block w-full text-sm"
+            />
           </label>
         </div>
         <button type="submit" disabled={isSubmitting} className="mt-6 w-full rounded-lg bg-foreground px-4 py-3 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60">
