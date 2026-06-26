@@ -2,7 +2,15 @@
 
 Damlok frontend is a React application for managing meeting projects, recording meetings, and editing generated meeting summaries.
 
-## Overview
+- React
+- vite
+- Tailwindcss@3
+- Axios
+- Zustand
+- React Router Dom
+- Docker
+- Oauth
+- Flutter (가능할 시)
 
 This project contains the frontend application for Damlok. It provides a sidebar-based workspace where users can create projects, manage project participants, start a meeting recording flow, review summary screens, and edit meeting summary content.
 
@@ -69,23 +77,64 @@ Notes:
 ## Project Structure
 
 ```text
+frontend/
+├─ public/
+│
+├─ src/
+│
+├─ eslint.config.ts
+├─ tsconfig.json
+└─ .env
+
 src/
-├── apis/              # Frontend API client functions
-├── components/        # Reusable UI components
-│   ├── auth/          # Auth, signup, and profile components
-│   ├── common/        # Shared UI primitives
-│   ├── context/       # App context, frontend models, and mock data/helpers
-│   ├── project/       # Project form and participant components
-│   ├── recording/     # Recording waveform component
-│   └── summary/       # Summary display component
-├── layouts/           # Root application layout
-├── pages/             # Route-level page components
-├── routes/            # Router configuration
-├── store/             # Summary Zustand store
-├── stores/            # Auth Zustand store
-├── styles/            # Font and theme styles
-├── types/             # Shared TypeScript types
-└── utils/             # Utility functions
+├─ api/                 # API 호출
+│  ├─ authApi.ts
+│  ├─ projectApi.ts
+│  ├─ participantApi.ts
+│  ├─ aiApi.ts
+│  └─ axios.ts
+│
+├─ components/          # 재사용 컴포넌트
+│  ├─ layout/
+│  │  ├─ AppLayout.tsx
+│  │  ├─ Sidebar.tsx
+│  │  └─ UserProfile.tsx
+│  │
+│  ├─ common/
+│  │  ├─ Button.tsx
+│  │  ├─ Modal.tsx
+│  │  ├─ Loading.tsx
+│  │  └─ EmptyState.tsx
+│  │
+│  └─ meeting/
+│     ├─ MeetingSummary.tsx
+│     ├─ ActionItemList.tsx
+│     └─ RecordingControl.tsx
+│
+├─ pages/
+│  ├─ LoginPage.tsx
+│  ├─ ProjectPage.tsx
+│  ├─ ProjectDetailPage.tsx
+│  ├─ MeetingCreatePage.tsx
+│  └─ MeetingDetailPage.tsx
+│
+├─ routes/
+│  └─ Router.tsx
+│
+├─ store/               # Context API
+│  ├─ AuthContext.tsx
+│  └─ ProjectContext.tsx
+│
+├─ hooks/
+│  ├─ useAuth.ts
+│  └─ useRecording.ts
+│
+├─ utils/
+│  ├─ constants.ts
+│  └─ formatters.ts
+│
+├─ App.tsx
+└─ main.tsx
 ```
 
 Root configuration files include Vite, TypeScript, ESLint, PostCSS, Tailwind CSS, and Docker configuration.
