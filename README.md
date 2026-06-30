@@ -10,7 +10,6 @@ Damlok frontend is a React application for managing meeting projects, recording 
 - React Router Dom
 - Docker
 - Oauth
-- Flutter (가능할 시)
 
 This project contains the frontend application for Damlok. It provides a sidebar-based workspace where users can create projects, manage project participants, start a meeting recording flow, review summary screens, and edit meeting summary content.
 
